@@ -240,52 +240,55 @@ function displayTodos() {
     });
 }
 
+// Add this near the top of the file with other global variables
+let allTodos = [];
+
 // Modify the loadTodos function
 async function loadTodos() {
     const todoList = document.getElementById('todoList');
     todoList.innerHTML = '';
 
     try {
-        // Make sure we have a logged-in user
         if (!auth.currentUser) {
             console.error('No user logged in');
             return;
         }
 
-        console.log('Current user:', auth.currentUser.uid); // Debug log
+        console.log('Loading todos for user:', auth.currentUser.uid);
 
         const q = query(
             collection(db, 'todos'),
-            where('userId', '==', auth.currentUser.uid)
+            where('userId', '==', auth.currentUser.uid),
+            orderBy('timestamp', 'desc')
         );
         
         const querySnapshot = await getDocs(q);
-        console.log('Query result:', querySnapshot.size, 'todos found'); // Debug log
-
-        if (querySnapshot.empty) {
-            todoList.innerHTML = '<p>No todos found. Add your first todo!</p>';
-            return;
-        }
+        console.log('Found todos:', querySnapshot.size);
 
         allTodos = []; // Clear the array
-        querySnapshot.forEach((docSnapshot) => {
-            console.log('Processing todo:', docSnapshot.id); // Debug log
-            const todo = docSnapshot.data();
-            todo.docId = docSnapshot.id;
-            
-            if (!todo.entryDate && todo.timestamp) {
-                const timestamp = todo.timestamp.toDate();
-                todo.entryDate = timestamp.toISOString().split('T')[0];
-            }
-            
+
+        querySnapshot.forEach((doc) => {
+            const todo = doc.data();
+            todo.docId = doc.id;
             allTodos.push(todo);
+            console.log('Added todo:', todo);
         });
 
-        console.log('Loaded todos:', allTodos); // Debug log
-        displayTodos(); // Use separate function to display todos
+        if (allTodos.length === 0) {
+            todoList.innerHTML = '<p>No todos found. Add your first todo!</p>';
+        } else {
+            displayTodos();
+        }
+
+        // Update categories dropdown
+        await updateCategoryDropdown();
+        
+        // Update database info
         updateDatabaseInfo();
+
     } catch (error) {
         console.error('Error loading todos:', error);
+        console.error('Error details:', error.message);
         todoList.innerHTML = '<p>Error loading todos. Please try again.</p>';
     }
 }
@@ -317,4 +320,66 @@ document.getElementById('todoForm').addEventListener('submit', async (e) => {
         alert('Error adding todo. Please try again.');
     }
 });
+
+// Add these functions for category management
+let allCategories = new Set();
+
+async function updateCategoryDropdown() {
+    const categorySelect = document.getElementById('category');
+    if (!categorySelect) return;
+
+    try {
+        // Get all todos to extract categories
+        const todosRef = collection(db, 'todos');
+        const q = query(todosRef, where('userId', '==', auth.currentUser.uid));
+        const querySnapshot = await getDocs(q);
+        
+        querySnapshot.forEach((doc) => {
+            const category = doc.data().category;
+            if (category) allCategories.add(category);
+        });
+
+        // Clear existing options
+        categorySelect.innerHTML = '';
+        
+        // Add default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.textContent = "Select Category";
+        categorySelect.appendChild(defaultOption);
+        
+        // Add existing categories
+        allCategories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            categorySelect.appendChild(option);
+        });
+
+        // Add "New Category" option
+        const newCategoryOption = document.createElement('option');
+        newCategoryOption.value = "new";
+        newCategoryOption.textContent = "➕ Add New Category";
+        categorySelect.appendChild(newCategoryOption);
+    } catch (err) {
+        console.error('Error updating categories:', err);
+    }
+}
+
+// Add this function to handle category changes
+window.handleCategoryChange = function(select) {
+    if (select.value === 'new') {
+        const newCategory = prompt('Enter new category name:');
+        if (newCategory) {
+            allCategories.add(newCategory);
+            const option = document.createElement('option');
+            option.value = newCategory;
+            option.textContent = newCategory;
+            select.insertBefore(option, select.lastElementChild);
+            select.value = newCategory;
+        } else {
+            select.selectedIndex = 0;
+        }
+    }
+};
 
