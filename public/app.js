@@ -221,7 +221,12 @@ function displayTodos() {
                     <span class="todo-label">Category:</span>
                     <span class="todo-category">${todo.category || 'No category'}</span>
                     <span class="todo-label" style="margin-left: 20px;">Status:</span>
-                    <span class="todo-status">${todo.status || 'No status'}</span>
+                    <select class="status-select" data-docid="${todo.docId}">
+                        <option value="not started" ${todo.status === 'not started' ? 'selected' : ''}>Not Started</option>
+                        <option value="in progress" ${todo.status === 'in progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="complete" ${todo.status === 'complete' ? 'selected' : ''}>Complete</option>
+                        <option value="aborted" ${todo.status === 'aborted' ? 'selected' : ''}>Aborted</option>
+                    </select>
                 </div>
                 <div class="todo-line">
                     <span class="todo-label">Entry Date:</span>
@@ -241,6 +246,24 @@ function displayTodos() {
             buttonDiv.appendChild(deleteButton);
             div.appendChild(buttonDiv);
             todoList.appendChild(div);
+
+            // Add change event listener to the status select
+            const statusSelect = div.querySelector('.status-select');
+            statusSelect.addEventListener('change', async (e) => {
+                try {
+                    const docRef = doc(db, 'todos', todo.docId);
+                    await updateDoc(docRef, {
+                        status: e.target.value,
+                        timestamp: serverTimestamp()
+                    });
+                    todo.status = e.target.value; // Update local data
+                    updateDatabaseInfo(); // Refresh the database info
+                    console.log('Status updated successfully');
+                } catch (error) {
+                    console.error('Error updating status:', error);
+                    alert('Error updating status. Please try again.');
+                }
+            });
         });
     } catch (error) {
         console.error('Error displaying todos:', error);
@@ -429,5 +452,33 @@ function updateDatabaseInfo() {
         console.error('Error updating database info:', error);
         dbInfoDiv.innerHTML = '<p>Error updating database info</p>';
     }
+}
+
+// Add this function to handle sorting
+window.applySorting = function() {
+    const sortField = document.getElementById('sortField').value;
+    const sortDirection = document.getElementById('sortDirection').value;
+    
+    console.log('Sorting by:', sortField, 'Direction:', sortDirection);
+    
+    allTodos.sort((a, b) => {
+        let comparison = 0;
+        
+        switch(sortField) {
+            case 'entryDate':
+                comparison = new Date(a.entryDate) - new Date(b.entryDate);
+                break;
+            case 'deadline':
+                comparison = new Date(a.deadline) - new Date(b.deadline);
+                break;
+            case 'category':
+                comparison = (a.category || '').localeCompare(b.category || '');
+                break;
+        }
+        
+        return sortDirection === 'asc' ? comparison : -comparison;
+    });
+    
+    displayTodos();
 }
 
