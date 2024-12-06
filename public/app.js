@@ -206,38 +206,46 @@ function displayTodos() {
     const todoList = document.getElementById('todoList');
     todoList.innerHTML = '';
     
-    allTodos.forEach((todo) => {
-        const div = document.createElement('div');
-        div.className = 'todo-item';
-        div.innerHTML = `
-            <div class="todo-line">
-                <span class="todo-description">${todo.description}</span>
-            </div>
-            <div class="todo-line">
-                <span class="todo-label">Category:</span>
-                <span class="todo-category">${todo.category}</span>
-                <span class="todo-label" style="margin-left: 20px;">Status:</span>
-                <span class="todo-status">${todo.status}</span>
-            </div>
-            <div class="todo-line">
-                <span class="todo-label">Entry Date:</span>
-                <span class="todo-date">${todo.entryDate || 'N/A'}</span>
-                <span class="todo-label" style="margin-left: 20px;">Deadline:</span>
-                <span class="todo-deadline">${todo.deadline}</span>
-            </div>
-        `;
+    try {
+        console.log('Displaying todos:', allTodos);
         
-        const buttonDiv = document.createElement('div');
-        buttonDiv.className = 'todo-button-line';
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.className = 'delete-button';
-        deleteButton.addEventListener('click', () => window.deleteTodoById(todo.docId));
-        
-        buttonDiv.appendChild(deleteButton);
-        div.appendChild(buttonDiv);
-        todoList.appendChild(div);
-    });
+        allTodos.forEach((todo) => {
+            console.log('Creating element for todo:', todo);
+            const div = document.createElement('div');
+            div.className = 'todo-item';
+            div.innerHTML = `
+                <div class="todo-line">
+                    <span class="todo-description">${todo.description || 'No description'}</span>
+                </div>
+                <div class="todo-line">
+                    <span class="todo-label">Category:</span>
+                    <span class="todo-category">${todo.category || 'No category'}</span>
+                    <span class="todo-label" style="margin-left: 20px;">Status:</span>
+                    <span class="todo-status">${todo.status || 'No status'}</span>
+                </div>
+                <div class="todo-line">
+                    <span class="todo-label">Entry Date:</span>
+                    <span class="todo-date">${todo.entryDate || 'N/A'}</span>
+                    <span class="todo-label" style="margin-left: 20px;">Deadline:</span>
+                    <span class="todo-deadline">${todo.deadline || 'No deadline'}</span>
+                </div>
+            `;
+            
+            const buttonDiv = document.createElement('div');
+            buttonDiv.className = 'todo-button-line';
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.className = 'delete-button';
+            deleteButton.addEventListener('click', () => window.deleteTodoById(todo.docId));
+            
+            buttonDiv.appendChild(deleteButton);
+            div.appendChild(buttonDiv);
+            todoList.appendChild(div);
+        });
+    } catch (error) {
+        console.error('Error displaying todos:', error);
+        todoList.innerHTML = `<p>Error displaying todos: ${error.message}</p>`;
+    }
 }
 
 // Add this near the top of the file with other global variables
@@ -256,40 +264,60 @@ async function loadTodos() {
 
         console.log('Loading todos for user:', auth.currentUser.uid);
 
+        // Create the query
+        const todosRef = collection(db, 'todos');
+        console.log('Collection reference created');
+
         const q = query(
-            collection(db, 'todos'),
+            todosRef,
             where('userId', '==', auth.currentUser.uid),
             orderBy('timestamp', 'desc')
         );
-        
-        const querySnapshot = await getDocs(q);
-        console.log('Found todos:', querySnapshot.size);
+        console.log('Query created');
 
-        allTodos = []; // Clear the array
+        try {
+            const querySnapshot = await getDocs(q);
+            console.log('Query executed, found:', querySnapshot.size, 'todos');
+            console.log('Query snapshot:', querySnapshot);
 
-        querySnapshot.forEach((doc) => {
-            const todo = doc.data();
-            todo.docId = doc.id;
-            allTodos.push(todo);
-            console.log('Added todo:', todo);
-        });
+            allTodos = []; // Clear the array
 
-        if (allTodos.length === 0) {
-            todoList.innerHTML = '<p>No todos found. Add your first todo!</p>';
-        } else {
-            displayTodos();
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                console.log('Document data:', data);
+                const todo = {
+                    ...data,
+                    docId: doc.id,
+                    entryDate: data.timestamp ? data.timestamp.toDate().toISOString().split('T')[0] : data.entryDate
+                };
+                allTodos.push(todo);
+                console.log('Added todo:', todo);
+            });
+
+            console.log('Final allTodos array:', allTodos);
+
+            if (allTodos.length === 0) {
+                todoList.innerHTML = '<p>No todos found. Add your first todo!</p>';
+            } else {
+                displayTodos();
+            }
+
+            // Update categories dropdown
+            await updateCategoryDropdown();
+            
+            // Update database info
+            updateDatabaseInfo();
+
+        } catch (queryError) {
+            console.error('Error executing query:', queryError);
+            throw queryError;
         }
-
-        // Update categories dropdown
-        await updateCategoryDropdown();
-        
-        // Update database info
-        updateDatabaseInfo();
 
     } catch (error) {
         console.error('Error loading todos:', error);
         console.error('Error details:', error.message);
-        todoList.innerHTML = '<p>Error loading todos. Please try again.</p>';
+        console.error('Error stack:', error.stack);
+        todoList.innerHTML = `<p>Error loading todos: ${error.message}</p>`;
     }
 }
 
@@ -382,4 +410,24 @@ window.handleCategoryChange = function(select) {
         }
     }
 };
+
+// Add this function to update database info
+function updateDatabaseInfo() {
+    const dbInfoDiv = document.getElementById('databaseInfo');
+    if (!dbInfoDiv) return;
+
+    try {
+        const lastUpdate = allTodos.length > 0 ? 
+            new Date(allTodos[0].timestamp?.toDate()).toLocaleString() : 
+            'No todos yet';
+
+        dbInfoDiv.innerHTML = `
+            <p>Last Updated: ${lastUpdate}</p>
+            <p>Number of Items: ${allTodos.length}</p>
+        `;
+    } catch (error) {
+        console.error('Error updating database info:', error);
+        dbInfoDiv.innerHTML = '<p>Error updating database info</p>';
+    }
+}
 
