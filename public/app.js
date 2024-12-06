@@ -209,7 +209,10 @@ document.getElementById('todoForm').addEventListener('submit', async (e) => {
     }
 });
 
-// Load Todos
+// Global variable to store todos
+let allTodos = [];
+
+// Modified loadTodos function
 async function loadTodos() {
     const todoList = document.getElementById('todoList');
     todoList.innerHTML = '';
@@ -217,58 +220,98 @@ async function loadTodos() {
     try {
         const q = query(
             collection(db, 'todos'),
-            where('userId', '==', auth.currentUser.uid),
-            orderBy('timestamp', 'desc')
+            where('userId', '==', auth.currentUser.uid)
         );
         
         const querySnapshot = await getDocs(q);
+        allTodos = []; // Clear the array
+        
         querySnapshot.forEach((docSnapshot) => {
             const todo = docSnapshot.data();
+            todo.docId = docSnapshot.id; // Store the document ID
             
             // Convert Firestore timestamp to date string for legacy items
-            let entryDate = todo.entryDate;
-            if (!entryDate && todo.timestamp) {
+            if (!todo.entryDate && todo.timestamp) {
                 const timestamp = todo.timestamp.toDate();
-                entryDate = timestamp.toISOString().split('T')[0];
+                todo.entryDate = timestamp.toISOString().split('T')[0];
             }
-
-            const div = document.createElement('div');
-            div.className = 'todo-item';
-            div.innerHTML = `
-                <div class="todo-line">
-                    <span class="todo-description">${todo.description}</span>
-                </div>
-                <div class="todo-line">
-                    <span class="todo-label">Category:</span>
-                    <span class="todo-category">${todo.category}</span>
-                    <span class="todo-label" style="margin-left: 20px;">Status:</span>
-                    <span class="todo-status">${todo.status}</span>
-                </div>
-                <div class="todo-line">
-                    <span class="todo-label">Entry Date:</span>
-                    <span class="todo-date">${entryDate || 'N/A'}</span>
-                    <span class="todo-label" style="margin-left: 20px;">Deadline:</span>
-                    <span class="todo-deadline">${todo.deadline}</span>
-                </div>
-            `;
             
-            // Create delete button in its own div
-            const buttonDiv = document.createElement('div');
-            buttonDiv.className = 'todo-button-line';
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.className = 'delete-button';
-            deleteButton.addEventListener('click', () => window.deleteTodoById(docSnapshot.id));
-            
-            buttonDiv.appendChild(deleteButton);
-            div.appendChild(buttonDiv);
-            todoList.appendChild(div);
+            allTodos.push(todo);
         });
 
+        // Apply initial sorting
+        applySorting();
         updateDatabaseInfo();
     } catch (error) {
         console.error('Error loading todos:', error);
     }
+}
+
+// Add this new function to handle sorting
+window.applySorting = function() {
+    const sortField = document.getElementById('sortField').value;
+    const sortDirection = document.getElementById('sortDirection').value;
+    
+    allTodos.sort((a, b) => {
+        let comparison = 0;
+        
+        switch(sortField) {
+            case 'entryDate':
+                comparison = new Date(a.entryDate) - new Date(b.entryDate);
+                break;
+            case 'deadline':
+                comparison = new Date(a.deadline) - new Date(b.deadline);
+                break;
+            case 'category':
+                comparison = a.category.localeCompare(b.category);
+                break;
+        }
+        
+        return sortDirection === 'asc' ? comparison : -comparison;
+    });
+    
+    // Refresh the display
+    displayTodos();
+}
+
+// New function to handle displaying todos
+function displayTodos() {
+    const todoList = document.getElementById('todoList');
+    todoList.innerHTML = '';
+    
+    allTodos.forEach((todo) => {
+        const div = document.createElement('div');
+        div.className = 'todo-item';
+        div.innerHTML = `
+            <div class="todo-line">
+                <span class="todo-description">${todo.description}</span>
+            </div>
+            <div class="todo-line">
+                <span class="todo-label">Category:</span>
+                <span class="todo-category">${todo.category}</span>
+                <span class="todo-label" style="margin-left: 20px;">Status:</span>
+                <span class="todo-status">${todo.status}</span>
+            </div>
+            <div class="todo-line">
+                <span class="todo-label">Entry Date:</span>
+                <span class="todo-date">${todo.entryDate || 'N/A'}</span>
+                <span class="todo-label" style="margin-left: 20px;">Deadline:</span>
+                <span class="todo-deadline">${todo.deadline}</span>
+            </div>
+        `;
+        
+        // Create delete button in its own div
+        const buttonDiv = document.createElement('div');
+        buttonDiv.className = 'todo-button-line';
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-button';
+        deleteButton.addEventListener('click', () => window.deleteTodoById(todo.docId));
+        
+        buttonDiv.appendChild(deleteButton);
+        div.appendChild(buttonDiv);
+        todoList.appendChild(div);
+    });
 }
 
 // Update Database Info

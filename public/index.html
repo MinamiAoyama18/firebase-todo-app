@@ -57,6 +57,19 @@
             <button type="submit">Add Todo</button>
         </form>
 
+        <div class="sorting-controls">
+            <select id="sortField">
+                <option value="entryDate">Entry Date</option>
+                <option value="deadline">Deadline</option>
+                <option value="category">Category</option>
+            </select>
+            <select id="sortDirection">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+            <button type="button" onclick="applySorting()">Apply Sort</button>
+        </div>
+
         <div id="todoList">
             <!-- Todos will be displayed here -->
         </div>
