@@ -316,3 +316,17 @@ select:focus, input:focus {
     gap: 10px;
     align-items: center;
 }
+
+.header-content {
+    flex: 1;
+}
+
+.user-email {
+    margin: 5px 0;
+    color: #666;
+}
+
+.user-email span {
+    font-weight: bold;
+    color: #333;
+}

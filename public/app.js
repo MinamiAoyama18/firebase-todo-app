@@ -87,6 +87,9 @@ if (loginForm) {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('Login successful:', userCredential.user);
             
+            // Display user email
+            document.getElementById('userEmail').textContent = email;
+            
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('todoSection').style.display = 'block';
             document.body.classList.add('todo-page');
@@ -152,6 +155,9 @@ function setupEventListeners() {
                 console.log('Attempting to create user:', email);
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 console.log('User created successfully:', userCredential.user);
+                
+                // Display user email
+                document.getElementById('userEmail').textContent = email;
                 
                 // Hide signup, show todo section
                 document.getElementById('signupSection').style.display = 'none';
