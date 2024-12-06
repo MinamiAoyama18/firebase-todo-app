@@ -1,0 +1,174 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    background-color: navy !important;
+}
+
+body.todo-page {
+    background-color: #4CAF50 !important;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input, select, button {
+    padding: 8px;
+    margin: 5px 0;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#todoList {
+    margin-top: 20px;
+}
+
+.todo-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.todo-line {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.todo-description {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.todo-label {
+    font-weight: bold;
+    color: #666;
+    min-width: 85px;
+    display: inline-block;
+}
+
+.todo-category, .todo-status, .todo-date, .todo-deadline {
+    color: #444;
+    margin-right: 20px;
+    display: inline-block;
+    min-width: 100px;
+}
+
+.todo-button-line {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.delete-button {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.delete-button:hover {
+    background-color: #cc0000;
+}
+
+#loginSection, #signupSection {
+    position: relative;
+    padding: 20px;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#loginSection > form,
+#signupSection > form {
+    width: 100%;
+}
+
+#switchToSignup,
+#switchToLogin {
+    background-color: #2196F3;
+    margin-top: 10px;
+    width: auto;
+    padding: 8px 16px;
+}
+
+#signupSection[style*="display: none"],
+#loginSection[style*="display: none"] {
+    display: none !important;
+}
+
+#signupSection[style*="display: block"],
+#loginSection[style*="display: block"] {
+    display: block !important;
+}
+
+select[name="category"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#todoSection {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logout-button {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
+}
+
+.todo-date {
+    color: #444;
+    margin-right: 20px;
+}

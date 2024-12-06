@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="loginSection">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        
+        <!-- Add registration option -->
+        <p>Don't have an account? 
+            <button type="button" id="switchToSignup" style="cursor: pointer;">Sign Up</button>
+        </p>
+    </div>
+
+    <!-- Add Sign Up Form - make sure it exists but is hidden -->
+    <div id="signupSection" style="display: none;">
+        <h2>Sign Up</h2>
+        <form id="signupForm">
+            <input type="email" id="signupEmail" placeholder="Email" required>
+            <input type="password" id="signupPassword" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        
+        <p>Already have an account? <button type="button" id="switchToLogin">Login</button></p>
+    </div>
+
+    <!-- Todo Form (initially hidden) -->
+    <div id="todoSection" style="display:none;">
+        <div class="header-section">
+            <h2>Add New Todo</h2>
+            <button id="logoutButton" class="logout-button" onclick="handleLogout()">Logout</button>
+        </div>
+        <form id="todoForm">
+            <input type="text" id="description" placeholder="Description" required>
+            <div class="input-field">
+                <label for="category">Category:</label>
+                <select name="category" required onchange="handleCategoryChange(this)">
+                    <option value="">Select Category</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <select id="status">
+                <option value="not started">Not Started</option>
+                <option value="in progress">In Progress</option>
+                <option value="complete">Complete</option>
+                <option value="aborted">Aborted</option>
+            </select>
+            <input type="date" id="deadline" required>
+            <button type="submit">Add Todo</button>
+        </form>
+
+        <div id="todoList">
+            <!-- Todos will be displayed here -->
+        </div>
+
+        <div id="databaseInfo">
+            <!-- Database info will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
+
