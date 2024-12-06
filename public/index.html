@@ -61,25 +61,32 @@
                 <input type="text" id="description" name="description" 
                        autocomplete="off" required>
             </div>
-            <div class="form-group">
-                <label for="category">Category:</label>
-                <select id="category" name="category" required onchange="handleCategoryChange(this)">
-                    <option value="">Select Category</option>
-                </select>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required 
+                            onchange="handleCategoryChange(this)">
+                        <option value="">Select Category</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="not started">Not Started</option>
+                        <option value="in progress">In Progress</option>
+                        <option value="complete">Complete</option>
+                        <option value="aborted">Aborted</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="deadline">Deadline</label>
+                    <input type="date" id="deadline" name="deadline" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select id="status" name="status">
-                    <option value="not started">Not Started</option>
-                    <option value="in progress">In Progress</option>
-                    <option value="complete">Complete</option>
-                    <option value="aborted">Aborted</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="deadline">Deadline</label>
-                <input type="date" id="deadline" name="deadline" required>
-            </div>
+            
             <button type="submit">Add Todo</button>
         </form>
 
