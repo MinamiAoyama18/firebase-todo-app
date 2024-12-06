@@ -482,3 +482,32 @@ window.applySorting = function() {
     displayTodos();
 }
 
+// Add this function to handle todo deletion
+window.deleteTodoById = async function(docId) {
+    if (!confirm('Are you sure you want to delete this todo?')) {
+        return;
+    }
+
+    try {
+        console.log('Attempting to delete todo:', docId);
+        const todoRef = doc(db, 'todos', docId);
+        await deleteDoc(todoRef);
+        console.log('Todo deleted successfully');
+        
+        // Remove from local array
+        allTodos = allTodos.filter(todo => todo.docId !== docId);
+        
+        // Refresh the display
+        displayTodos();
+        
+        // Update the database info
+        updateDatabaseInfo();
+        
+        // Update categories dropdown in case we deleted the last item with a particular category
+        await updateCategoryDropdown();
+    } catch (error) {
+        console.error('Error deleting todo:', error);
+        alert('Error deleting todo. Please try again.');
+    }
+};
+
