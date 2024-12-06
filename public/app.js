@@ -201,7 +201,46 @@ if (document.readyState === 'complete') {
     setupEventListeners();
 }
 
-// Modify the loadTodos function to handle errors better
+// Add this function to handle displaying todos
+function displayTodos() {
+    const todoList = document.getElementById('todoList');
+    todoList.innerHTML = '';
+    
+    allTodos.forEach((todo) => {
+        const div = document.createElement('div');
+        div.className = 'todo-item';
+        div.innerHTML = `
+            <div class="todo-line">
+                <span class="todo-description">${todo.description}</span>
+            </div>
+            <div class="todo-line">
+                <span class="todo-label">Category:</span>
+                <span class="todo-category">${todo.category}</span>
+                <span class="todo-label" style="margin-left: 20px;">Status:</span>
+                <span class="todo-status">${todo.status}</span>
+            </div>
+            <div class="todo-line">
+                <span class="todo-label">Entry Date:</span>
+                <span class="todo-date">${todo.entryDate || 'N/A'}</span>
+                <span class="todo-label" style="margin-left: 20px;">Deadline:</span>
+                <span class="todo-deadline">${todo.deadline}</span>
+            </div>
+        `;
+        
+        const buttonDiv = document.createElement('div');
+        buttonDiv.className = 'todo-button-line';
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-button';
+        deleteButton.addEventListener('click', () => window.deleteTodoById(todo.docId));
+        
+        buttonDiv.appendChild(deleteButton);
+        div.appendChild(buttonDiv);
+        todoList.appendChild(div);
+    });
+}
+
+// Modify the loadTodos function
 async function loadTodos() {
     const todoList = document.getElementById('todoList');
     todoList.innerHTML = '';
@@ -213,14 +252,16 @@ async function loadTodos() {
             return;
         }
 
+        console.log('Current user:', auth.currentUser.uid); // Debug log
+
         const q = query(
             collection(db, 'todos'),
             where('userId', '==', auth.currentUser.uid)
         );
         
         const querySnapshot = await getDocs(q);
-        console.log('Found', querySnapshot.size, 'todos');
-        
+        console.log('Query result:', querySnapshot.size, 'todos found'); // Debug log
+
         if (querySnapshot.empty) {
             todoList.innerHTML = '<p>No todos found. Add your first todo!</p>';
             return;
@@ -228,6 +269,7 @@ async function loadTodos() {
 
         allTodos = []; // Clear the array
         querySnapshot.forEach((docSnapshot) => {
+            console.log('Processing todo:', docSnapshot.id); // Debug log
             const todo = docSnapshot.data();
             todo.docId = docSnapshot.id;
             
@@ -239,12 +281,40 @@ async function loadTodos() {
             allTodos.push(todo);
         });
 
-        // Apply initial sorting and display
-        applySorting();
+        console.log('Loaded todos:', allTodos); // Debug log
+        displayTodos(); // Use separate function to display todos
         updateDatabaseInfo();
     } catch (error) {
         console.error('Error loading todos:', error);
         todoList.innerHTML = '<p>Error loading todos. Please try again.</p>';
     }
 }
+
+// Add this function to handle adding new todos
+document.getElementById('todoForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    try {
+        const todo = {
+            description: document.getElementById('description').value,
+            category: document.getElementById('category').value,
+            status: document.getElementById('status').value,
+            deadline: document.getElementById('deadline').value,
+            entryDate: new Date().toISOString().split('T')[0],
+            timestamp: serverTimestamp(),
+            userId: auth.currentUser.uid
+        };
+
+        console.log('Adding new todo:', todo); // Debug log
+
+        const docRef = await addDoc(collection(db, 'todos'), todo);
+        console.log('Todo added with ID:', docRef.id); // Debug log
+        
+        document.getElementById('todoForm').reset();
+        await loadTodos(); // Reload the todos after adding
+    } catch (error) {
+        console.error('Error adding todo:', error);
+        alert('Error adding todo. Please try again.');
+    }
+});
 
