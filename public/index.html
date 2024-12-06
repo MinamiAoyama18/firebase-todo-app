@@ -9,23 +9,38 @@
     <div id="loginSection">
         <h2>Login</h2>
         <form id="loginForm">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" 
+                       autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" 
+                       autocomplete="current-password" required>
+            </div>
             <button type="submit">Login</button>
         </form>
         
-        <!-- Add registration option -->
         <p>Don't have an account? 
             <button type="button" id="switchToSignup" style="cursor: pointer;">Sign Up</button>
         </p>
     </div>
 
-    <!-- Add Sign Up Form -->
+    <!-- Sign Up Form -->
     <div id="signupSection" style="display: none;">
         <h2>Sign Up</h2>
         <form id="signupForm">
-            <input type="email" id="signupEmail" placeholder="Email" required>
-            <input type="password" id="signupPassword" placeholder="Password" required>
+            <div class="form-group">
+                <label for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" name="email" 
+                       autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" name="password" 
+                       autocomplete="new-password" required>
+            </div>
             <button type="submit">Sign Up</button>
         </form>
         
@@ -34,28 +49,38 @@
         </p>
     </div>
 
-    <!-- Todo Form (initially hidden) -->
+    <!-- Todo Form section -->
     <div id="todoSection" style="display:none;">
         <div class="header-section">
             <h2>Add New Todo</h2>
             <button id="logoutButton" class="logout-button" onclick="handleLogout()">Logout</button>
         </div>
         <form id="todoForm">
-            <input type="text" id="description" placeholder="Description" required>
-            <div class="input-field">
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" 
+                       autocomplete="off" required>
+            </div>
+            <div class="form-group">
                 <label for="category">Category:</label>
-                <select name="category" required onchange="handleCategoryChange(this)">
+                <select id="category" name="category" required 
+                        onchange="handleCategoryChange(this)">
                     <option value="">Select Category</option>
-                    <!-- Options will be populated dynamically -->
                 </select>
             </div>
-            <select id="status">
-                <option value="not started">Not Started</option>
-                <option value="in progress">In Progress</option>
-                <option value="complete">Complete</option>
-                <option value="aborted">Aborted</option>
-            </select>
-            <input type="date" id="deadline" required>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="not started">Not Started</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="complete">Complete</option>
+                    <option value="aborted">Aborted</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="deadline">Deadline</label>
+                <input type="date" id="deadline" name="deadline" required>
+            </div>
             <button type="submit">Add Todo</button>
         </form>
 
