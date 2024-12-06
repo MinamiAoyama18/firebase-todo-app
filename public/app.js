@@ -51,6 +51,31 @@ async function checkUserExists(email) {
     }
 }
 
+// Add this function definition near the top of the file, after Firebase initialization
+function setupLogoutButton() {
+    console.log('Setting up logout button');
+    const logoutButton = document.getElementById('logoutButton');
+    
+    if (logoutButton) {
+        logoutButton.onclick = async function() {
+            try {
+                await signOut(auth);
+                console.log('Successfully logged out');
+                // Reset UI
+                document.getElementById('todoSection').style.display = 'none';
+                document.getElementById('loginSection').style.display = 'block';
+                document.body.classList.remove('todo-page');
+                // Clear displayed todos
+                document.getElementById('todoList').innerHTML = '';
+                document.getElementById('databaseInfo').innerHTML = '';
+            } catch (error) {
+                console.error('Error signing out:', error);
+                alert('Error signing out: ' + error.message);
+            }
+        };
+    }
+}
+
 if (loginForm) {
     loginForm.onsubmit = async function(e) {
         e.preventDefault();
@@ -59,9 +84,6 @@ if (loginForm) {
 
         try {
             console.log('Attempting login with:', email);
-            const exists = await checkUserExists(email);
-            console.log('User exists:', exists);
-            
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('Login successful:', userCredential.user);
             
@@ -69,7 +91,7 @@ if (loginForm) {
             document.getElementById('todoSection').style.display = 'block';
             document.body.classList.add('todo-page');
             setupLogoutButton();
-            loadTodos();
+            await loadTodos(); // Make sure to await this
         } catch (error) {
             console.error('Login error:', error);
             let errorMessage = 'Login failed: ';
@@ -84,6 +106,8 @@ if (loginForm) {
                     errorMessage += error.message;
             }
             alert(errorMessage);
+            // Don't redirect on error
+            return;
         }
     };
 }
@@ -175,5 +199,52 @@ document.addEventListener('DOMContentLoaded', function() {
 if (document.readyState === 'complete') {
     console.log('DOM already complete - Setting up event listeners');
     setupEventListeners();
+}
+
+// Modify the loadTodos function to handle errors better
+async function loadTodos() {
+    const todoList = document.getElementById('todoList');
+    todoList.innerHTML = '';
+
+    try {
+        // Make sure we have a logged-in user
+        if (!auth.currentUser) {
+            console.error('No user logged in');
+            return;
+        }
+
+        const q = query(
+            collection(db, 'todos'),
+            where('userId', '==', auth.currentUser.uid)
+        );
+        
+        const querySnapshot = await getDocs(q);
+        console.log('Found', querySnapshot.size, 'todos');
+        
+        if (querySnapshot.empty) {
+            todoList.innerHTML = '<p>No todos found. Add your first todo!</p>';
+            return;
+        }
+
+        allTodos = []; // Clear the array
+        querySnapshot.forEach((docSnapshot) => {
+            const todo = docSnapshot.data();
+            todo.docId = docSnapshot.id;
+            
+            if (!todo.entryDate && todo.timestamp) {
+                const timestamp = todo.timestamp.toDate();
+                todo.entryDate = timestamp.toISOString().split('T')[0];
+            }
+            
+            allTodos.push(todo);
+        });
+
+        // Apply initial sorting and display
+        applySorting();
+        updateDatabaseInfo();
+    } catch (error) {
+        console.error('Error loading todos:', error);
+        todoList.innerHTML = '<p>Error loading todos. Please try again.</p>';
+    }
 }
 
