@@ -72,14 +72,14 @@ button:active {
 }
 
 .todo-item {
-    background: white;
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 8px;
     padding: 15px;
     margin: 10px 0;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    transition: all 0.3s ease;
 }
 
 .todo-item input[type="checkbox"] {
@@ -88,10 +88,14 @@ button:active {
 }
 
 .delete-btn {
-    background-color: #ff4444;
-    padding: 8px 12px;
+    padding: 8px 15px;
     font-size: 14px;
-    margin-left: auto;
+    width: auto;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    opacity: 0.8;
 }
 
 .header-section {

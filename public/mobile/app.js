@@ -91,6 +91,14 @@ function loadTodos() {
             const todo = docSnapshot.data();
             const div = document.createElement('div');
             div.className = 'todo-item';
+            
+            // Generate random background color and matching text color
+            const backgroundColor = getRandomPastelColor();
+            const textColor = getContrastColor(backgroundColor);
+            
+            div.style.backgroundColor = backgroundColor;
+            div.style.color = textColor;
+            
             div.innerHTML = `
                 <div class="todo-line-1">
                     <input type="checkbox" class="status-checkbox" ${todo.status === 'complete' ? 'checked' : ''}>
@@ -102,6 +110,12 @@ function loadTodos() {
                     <button class="delete-btn" data-id="${docSnapshot.id}">Delete</button>
                 </div>
             `;
+
+            // Update delete button color to match the contrast
+            const deleteBtn = div.querySelector('.delete-btn');
+            deleteBtn.style.color = textColor;
+            deleteBtn.style.backgroundColor = 'transparent';
+            deleteBtn.style.border = `1px solid ${textColor}`;
 
             // Add status change functionality
             const checkbox = div.querySelector('.status-checkbox');
@@ -122,7 +136,6 @@ function loadTodos() {
             });
 
             // Add delete functionality
-            const deleteBtn = div.querySelector('.delete-btn');
             deleteBtn.addEventListener('click', async () => {
                 try {
                     if (confirm('Are you sure you want to delete this todo?')) {
