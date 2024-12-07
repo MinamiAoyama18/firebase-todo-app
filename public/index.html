@@ -124,6 +124,18 @@
         window.location.href = '/mobile';
     }
     </script>
+
+    <script>
+    // Add this after your existing scripts
+    window.onload = function() {
+        // Check if redirected from mobile with signup parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('signup') === 'true') {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('signupSection').style.display = 'block';
+        }
+    }
+    </script>
 </body>
 </html>
 

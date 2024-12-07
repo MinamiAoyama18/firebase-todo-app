@@ -175,7 +175,8 @@ function loadTodos() {
 
 // Switch between login and signup
 switchToSignup.addEventListener('click', () => {
-    window.location.href = '/';
+    // Redirect to desktop version with signup section visible
+    window.location.href = '/?signup=true';
 });
 
 // Logout
