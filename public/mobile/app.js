@@ -5,12 +5,12 @@ import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot } f
 
 // Copy your Firebase configuration from the desktop version
 const firebaseConfig = {
-    apiKey: "AIzaSyBxcYFZBIYVZQgDgWHuRmYzqj6-oBILXL8",
+    apiKey: "AIzaSyB4dy-QQT4YLHCdMLF0C6vHUiwEwnQmyjs",
     authDomain: "todoapp-20241203.firebaseapp.com",
     projectId: "todoapp-20241203",
-    storageBucket: "todoapp-20241203.appspot.com",
-    messagingSenderId: "1096981910987",
-    appId: "1:1096981910987:web:c0c6a2c3f5c8c6c6c6c6c6"
+    storageBucket: "todoapp-20241203.firebasestorage.app",
+    messagingSenderId: "1070704775643",
+    appId: "1:1070704775643:web:d749dced778e49d4a3d7fe"
 };
 
 // Initialize Firebase
