@@ -74,6 +74,7 @@ auth.onAuthStateChanged((user) => {
         todoSection.style.display = 'block';
         userEmailSpan.textContent = user.email;
         loadTodos();
+        loadCategories();
     } else {
         loginSection.style.display = 'block';
         signupSection.style.display = 'none';
@@ -150,4 +151,48 @@ function handleSwipe() {
     if (Math.abs(swipeDistance) > 50) {
         // Add swipe-to-delete functionality
     }
-} 
+}
+
+// Add this after initializing Firebase
+const categorySelect = document.getElementById('category');
+
+// Add this function to load categories
+async function loadCategories() {
+    const categoriesQuery = query(
+        collection(db, 'categories'),
+        where('userId', '==', auth.currentUser.uid)
+    );
+
+    onSnapshot(categoriesQuery, (snapshot) => {
+        // Clear existing options except the default one
+        categorySelect.innerHTML = '<option value="">Select Category</option>';
+        
+        // Add categories from Firestore
+        snapshot.forEach((doc) => {
+            const category = doc.data().name;
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            categorySelect.appendChild(option);
+        });
+    });
+}
+
+// Add category handling
+categorySelect.addEventListener('change', async function(e) {
+    if (e.target.value === 'add-new') {
+        const newCategory = prompt('Enter new category name:');
+        if (newCategory) {
+            try {
+                await addDoc(collection(db, 'categories'), {
+                    userId: auth.currentUser.uid,
+                    name: newCategory,
+                    timestamp: new Date()
+                });
+                // The categories will automatically update through the onSnapshot listener
+            } catch (error) {
+                alert('Error adding category: ' + error.message);
+            }
+        }
+    }
+}); 
