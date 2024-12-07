@@ -174,10 +174,9 @@ async function loadCategories() {
             if (category) categories.add(category);
         });
 
-        // Update the select element
+        // Update the select element with just the default option first
         categorySelect.innerHTML = `
             <option value="">Select Category</option>
-            <option value="add-new">+ Add New Category</option>
         `;
         
         // Add existing categories
@@ -187,6 +186,12 @@ async function loadCategories() {
             option.textContent = category;
             categorySelect.appendChild(option);
         });
+
+        // Add the "Add New Category" option at the end
+        const newOption = document.createElement('option');
+        newOption.value = "add-new";
+        newOption.textContent = "+ Add New Category";
+        categorySelect.appendChild(newOption);
 
     } catch (error) {
         console.error('Error loading categories:', error);
