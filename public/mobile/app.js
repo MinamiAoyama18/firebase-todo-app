@@ -116,8 +116,8 @@ function loadTodos() {
                     <span class="description ${todo.status === 'complete' ? 'completed' : ''}">${todo.description}</span>
                 </div>
                 <div class="todo-line-2">
-                    <span class="category">${todo.category}</span>
-                    <span class="deadline">${todo.deadline}</span>
+                    <span class="category-label">Category: <span class="category-value">${todo.category}</span></span>
+                    <span class="deadline-label">By <span class="deadline-value">${todo.deadline}</span></span>
                     <button class="delete-btn" data-id="${docSnapshot.id}">Delete</button>
                 </div>
             `;
