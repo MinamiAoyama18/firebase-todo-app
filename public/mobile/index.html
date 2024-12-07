@@ -52,8 +52,11 @@
                     <option value="complete">Complete</option>
                     <option value="aborted">Aborted</option>
                 </select>
-                <button type="button" id="deadlineBtn" onclick="showDatePicker()">Deadline</button>
-                <input type="date" id="deadline" required style="display: none;">
+                <div class="deadline-container">
+                    <button type="button" id="deadlineBtn" onclick="showDatePicker()">Deadline</button>
+                    <span id="selectedDate"></span>
+                    <input type="date" id="deadline" required style="display: none;">
+                </div>
                 <button type="submit">Add Todo</button>
             </form>
 

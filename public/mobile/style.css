@@ -217,9 +217,25 @@ button:active {
 }
 
 /* Form styling */
-#deadlineBtn {
-    background-color: #666;
+.deadline-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
+    gap: 10px;
+}
+
+#deadlineBtn {
+    width: 40%;
+    background-color: #666;
+    margin: 0;
+}
+
+#selectedDate {
+    flex-grow: 1;
+    text-align: right;
+    color: var(--text-color);
+    font-size: 14px;
 }
 
 #status {
