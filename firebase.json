@@ -4,11 +4,11 @@
     "rewrites": [
       {
         "source": "/mobile",
-        "destination": "/public-mobile/index.html"
+        "destination": "/mobile/index.html"
       },
       {
         "source": "/mobile/**",
-        "destination": "/public-mobile/**"
+        "destination": "/mobile/**"
       },
       {
         "source": "**",
