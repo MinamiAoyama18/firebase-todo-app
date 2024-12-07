@@ -104,16 +104,19 @@ function loadTodos() {
         orderBy('timestamp', 'desc')
     );
 
-    // Format today's date
-    const today = new Date();
-    const dateStr = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-    
-    // Set the header text
-    const todoList = document.getElementById('todoList');
-    todoList.setAttribute('data-header', `To Do Items as of ${dateStr}`);
-
     onSnapshot(todosQuery, (snapshot) => {
         todoList.innerHTML = '';
+        
+        // Get the timestamp of the most recent todo
+        let latestTimestamp = new Date();
+        if (snapshot.docs.length > 0) {
+            latestTimestamp = snapshot.docs[0].data().timestamp.toDate();
+        }
+        
+        // Format the timestamp
+        const formattedDate = latestTimestamp.toISOString().split('T')[0];
+        todoList.setAttribute('data-header', `To Do Items as of ${formattedDate}`);
+
         snapshot.forEach((docSnapshot) => {
             const todo = docSnapshot.data();
             const div = document.createElement('div');
@@ -300,37 +303,45 @@ async function loadCategories() {
 // Update the category handling
 categorySelect.addEventListener('change', async function(e) {
     if (e.target.value === 'add-new') {
-        const newCategory = prompt('Enter new category name:');
-        if (newCategory) {
-            try {
-                // Add the new category to Firestore
-                await addDoc(collection(db, 'categories'), {
-                    userId: auth.currentUser.uid,
-                    name: newCategory,
-                    timestamp: new Date()
-                });
+        const modal = document.getElementById('categoryModal');
+        const input = document.getElementById('newCategoryInput');
+        const confirmBtn = document.getElementById('confirmCategory');
+        const cancelBtn = document.getElementById('cancelCategory');
+        
+        modal.style.display = 'flex';
+        input.value = '';
+        input.focus();
 
-                // Update the select element with the new category
-                const option = document.createElement('option');
-                option.value = newCategory;
-                option.textContent = newCategory;
-                
-                // Insert the new option before the "Add New Category" option
-                const addNewOption = categorySelect.querySelector('option[value="add-new"]');
-                categorySelect.insertBefore(option, addNewOption);
-                
-                // Select the new category
-                categorySelect.value = newCategory;
+        const handleCategory = async (confirmed) => {
+            modal.style.display = 'none';
+            if (confirmed && input.value.trim()) {
+                const newCategory = input.value.trim();
+                try {
+                    await addDoc(collection(db, 'categories'), {
+                        userId: auth.currentUser.uid,
+                        name: newCategory,
+                        timestamp: new Date()
+                    });
 
-            } catch (error) {
-                console.error('Error adding category:', error);
-                alert('Error adding category: ' + error.message);
-                categorySelect.value = ''; // Reset to default option
+                    const option = document.createElement('option');
+                    option.value = newCategory;
+                    option.textContent = newCategory;
+                    
+                    const addNewOption = categorySelect.querySelector('option[value="add-new"]');
+                    categorySelect.insertBefore(option, addNewOption);
+                    categorySelect.value = newCategory;
+                } catch (error) {
+                    console.error('Error adding category:', error);
+                    alert('Error adding category: ' + error.message);
+                    categorySelect.value = '';
+                }
+            } else {
+                categorySelect.value = '';
             }
-        } else {
-            // If user cancels the prompt, reset to default option
-            categorySelect.value = '';
-        }
+        };
+
+        confirmBtn.onclick = () => handleCategory(true);
+        cancelBtn.onclick = () => handleCategory(false);
     }
 });
  
