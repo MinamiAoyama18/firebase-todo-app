@@ -97,6 +97,9 @@ function loadTodos() {
         orderBy('timestamp', 'desc')
     );
 
+    // Store color schemes for each todo
+    const todoColors = new Map();
+
     onSnapshot(todosQuery, (snapshot) => {
         todoList.innerHTML = '';
         snapshot.forEach((docSnapshot) => {
@@ -104,8 +107,12 @@ function loadTodos() {
             const div = document.createElement('div');
             div.className = 'todo-item';
             
-            // Get a random color scheme
-            const colorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
+            // Get or create color scheme for this todo
+            let colorScheme = todoColors.get(docSnapshot.id);
+            if (!colorScheme) {
+                colorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
+                todoColors.set(docSnapshot.id, colorScheme);
+            }
             
             div.style.backgroundColor = colorScheme.bg;
             div.style.color = colorScheme.text;
@@ -134,9 +141,22 @@ function loadTodos() {
             checkbox.addEventListener('change', async () => {
                 try {
                     const docRef = doc(db, 'todos', docSnapshot.id);
-                    await updateDoc(docRef, {
-                        status: checkbox.checked ? 'complete' : 'not started'
-                    });
+                    if (checkbox.checked) {
+                        // If checked, set to complete
+                        await updateDoc(docRef, {
+                            status: 'complete'
+                        });
+                    } else {
+                        // If unchecked, revert to original status
+                        await updateDoc(docRef, {
+                            status: todo.status === 'complete' ? 'not started' : todo.status
+                        });
+                    }
+                    
+                    // Update the status tag text
+                    const statusTag = div.querySelector('.status-tag');
+                    statusTag.textContent = `(${checkbox.checked ? 'complete' : todo.status === 'complete' ? 'not started' : todo.status})`;
+                    
                     // Update the description style
                     const description = div.querySelector('.description');
                     description.classList.toggle('completed', checkbox.checked);
