@@ -3,17 +3,13 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, getDocs, deleteDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
 
-// Replace the color utility functions with this array of predefined colors
-const colorSchemes = [
-    { bg: '#E8F5E9', text: '#333333' }, // Light green
-    { bg: '#F3E5F5', text: '#333333' }, // Light purple
-    { bg: '#E3F2FD', text: '#333333' }, // Light blue
-    { bg: '#FFF3E0', text: '#333333' }, // Light orange
-    { bg: '#FFEBEE', text: '#333333' }, // Light red
-    { bg: '#E0F7FA', text: '#333333' }, // Light cyan
-    { bg: '#F1F8E9', text: '#333333' }, // Light lime
-    { bg: '#FFF8E1', text: '#333333' }  // Light amber
-];
+// Replace the random color schemes with status-specific colors
+const statusColors = {
+    'not started': { bg: '#FFF3E0', text: '#333333' }, // Light orange for not started
+    'in progress': { bg: '#E3F2FD', text: '#333333' }, // Light blue for in progress
+    'complete': { bg: '#E8F5E9', text: '#333333' },    // Light green for complete
+    'aborted': { bg: '#FFEBEE', text: '#333333' }      // Light red for aborted
+};
 
 // Copy your Firebase configuration from the desktop version
 const firebaseConfig = {
@@ -110,7 +106,7 @@ function loadTodos() {
             // Get or create color scheme for this todo
             let colorScheme = todoColors.get(docSnapshot.id);
             if (!colorScheme) {
-                colorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
+                colorScheme = statusColors[todo.status];
                 todoColors.set(docSnapshot.id, colorScheme);
             }
             
@@ -119,9 +115,13 @@ function loadTodos() {
             
             div.innerHTML = `
                 <div class="todo-line-1">
-                    <input type="checkbox" class="status-checkbox" ${todo.status === 'complete' ? 'checked' : ''}>
-                    <span class="description ${todo.status === 'complete' ? 'completed' : ''}">${todo.description}</span>
-                    <span class="status-tag">(${todo.status})</span>
+                    <span class="description ${['complete', 'aborted'].includes(todo.status) ? 'completed' : ''}">${todo.description}</span>
+                    <select class="status-select-item">
+                        <option value="not started" ${todo.status === 'not started' ? 'selected' : ''}>Not Started</option>
+                        <option value="in progress" ${todo.status === 'in progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="complete" ${todo.status === 'complete' ? 'selected' : ''}>Complete</option>
+                        <option value="aborted" ${todo.status === 'aborted' ? 'selected' : ''}>Aborted</option>
+                    </select>
                 </div>
                 <div class="todo-line-2">
                     <span class="category-label">Category: <span class="category-value">${todo.category}</span></span>
@@ -130,39 +130,35 @@ function loadTodos() {
                 </div>
             `;
 
-            // Update delete button color
-            const deleteBtn = div.querySelector('.delete-btn');
-            deleteBtn.style.color = colorScheme.text;
-            deleteBtn.style.backgroundColor = 'transparent';
-            deleteBtn.style.border = `1px solid ${colorScheme.text}`;
-
-            // Add status change functionality
-            const checkbox = div.querySelector('.status-checkbox');
-            checkbox.addEventListener('change', async () => {
+            // Add status change handler
+            const statusSelect = div.querySelector('.status-select-item');
+            statusSelect.addEventListener('change', async () => {
                 try {
+                    const newStatus = statusSelect.value;
                     const docRef = doc(db, 'todos', docSnapshot.id);
-                    const newStatus = checkbox.checked ? 'complete' : todo.originalStatus || todo.status;
                     
                     // Update the document
                     await updateDoc(docRef, {
                         status: newStatus
                     });
 
-                    // Update local todo object
-                    todo.originalStatus = todo.originalStatus || todo.status;
-                    todo.status = newStatus;
-                    
-                    // Update the status tag text
-                    const statusTag = div.querySelector('.status-tag');
-                    statusTag.textContent = `(${newStatus})`;
-                    
                     // Update the description style
                     const description = div.querySelector('.description');
-                    description.classList.toggle('completed', checkbox.checked);
+                    description.classList.toggle('completed', ['complete', 'aborted'].includes(newStatus));
+                    
+                    // Update the color scheme
+                    const colorScheme = statusColors[newStatus];
+                    div.style.backgroundColor = colorScheme.bg;
+                    div.style.color = colorScheme.text;
+                    
+                    // Update delete button style
+                    const deleteBtn = div.querySelector('.delete-btn');
+                    deleteBtn.style.color = colorScheme.text;
+                    deleteBtn.style.border = `1px solid ${colorScheme.text}`;
                 } catch (error) {
                     console.error('Error updating status:', error);
                     alert('Error updating status. Please try again.');
-                    checkbox.checked = !checkbox.checked; // Revert checkbox state
+                    statusSelect.value = todo.status; // Revert to previous status
                 }
             });
 
