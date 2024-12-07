@@ -3,12 +3,12 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, getDocs, deleteDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
 
-// Replace the random color schemes with status-specific colors
+// Update the status colors with softer, distinct colors
 const statusColors = {
     'not started': { bg: '#FFF3E0', text: '#333333' },  // Light orange
     'in progress': { bg: '#E3F2FD', text: '#333333' },  // Light blue
-    'complete': { bg: '#1B5E20', text: '#FFFFFF' },     // Dark green with white text
-    'aborted': { bg: '#B71C1C', text: '#FFFFFF' }       // Dark red with white text
+    'complete': { bg: '#E8F5E9', text: '#1B5E20' },     // Light green with dark green text
+    'aborted': { bg: '#FCE4EC', text: '#880E4F' }       // Light pink with dark pink text
 };
 
 // Copy your Firebase configuration from the desktop version
