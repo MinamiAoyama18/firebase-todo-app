@@ -5,10 +5,10 @@ import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, ge
 
 // Replace the random color schemes with status-specific colors
 const statusColors = {
-    'not started': { bg: '#FFF3E0', text: '#333333' }, // Light orange for not started
-    'in progress': { bg: '#E3F2FD', text: '#333333' }, // Light blue for in progress
-    'complete': { bg: '#E8F5E9', text: '#333333' },    // Light green for complete
-    'aborted': { bg: '#FFEBEE', text: '#333333' }      // Light red for aborted
+    'not started': { bg: '#FFF3E0', text: '#333333' },  // Light orange
+    'in progress': { bg: '#E3F2FD', text: '#333333' },  // Light blue
+    'complete': { bg: '#C8E6C9', text: '#1B5E20' },     // Green with darker text
+    'aborted': { bg: '#FFCDD2', text: '#B71C1C' }       // Red with darker text
 };
 
 // Copy your Firebase configuration from the desktop version
