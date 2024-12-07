@@ -267,23 +267,4 @@ categorySelect.addEventListener('change', async function(e) {
         }
     }
 });
-
-// Move this function to the top level (outside of any other function)
-window.showDatePicker = function() {
-    const deadlineInput = document.getElementById('deadline');
-    const selectedDate = document.getElementById('selectedDate');
-    
-    deadlineInput.style.display = 'block';
-    deadlineInput.showPicker();
-    
-    deadlineInput.addEventListener('change', function() {
-        const date = new Date(this.value);
-        const formattedDate = date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-        selectedDate.textContent = formattedDate;
-        this.style.display = 'none';
-    }, { once: true });
-} 
+ 

@@ -42,21 +42,23 @@
             
             <form id="todoForm">
                 <input type="text" id="description" placeholder="New Todo" required>
-                <select id="category" required>
-                    <option value="">Select Category</option>
-                </select>
-                <select id="status">
-                    <option value="">Select Progress</option>
-                    <option value="not started">Not Started</option>
-                    <option value="in progress">In Progress</option>
-                    <option value="complete">Complete</option>
-                    <option value="aborted">Aborted</option>
-                </select>
-                <div class="deadline-container">
-                    <button type="button" id="deadlineBtn" onclick="showDatePicker()">Deadline</button>
-                    <span id="selectedDate"></span>
-                    <input type="date" id="deadline" required style="display: none;">
+                <div class="form-row">
+                    <select id="category" required class="category-select">
+                        <option value="">Select Category</option>
+                    </select>
+                    <select id="status" class="status-select">
+                        <option value="">Select Progress</option>
+                        <option value="not started">Not Started</option>
+                        <option value="in progress">In Progress</option>
+                        <option value="complete">Complete</option>
+                        <option value="aborted">Aborted</option>
+                    </select>
                 </div>
+                <input type="date" 
+                       id="deadline" 
+                       required 
+                       class="deadline-input" 
+                       placeholder="Choose Deadline">
                 <button type="submit">Add Todo</button>
             </form>
 
