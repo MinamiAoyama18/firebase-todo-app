@@ -1,7 +1,7 @@
 // Import your Firebase configuration
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
-import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, getDocs } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
 
 // Copy your Firebase configuration from the desktop version
 const firebaseConfig = {
@@ -159,29 +159,38 @@ const categorySelect = document.getElementById('category');
 // Add this function to load categories
 async function loadCategories() {
     console.log('Loading categories...');
-    const categoriesQuery = query(
-        collection(db, 'categories'),
-        where('userId', '==', auth.currentUser.uid)
-    );
+    
+    try {
+        // Get all todos to extract categories
+        const todosRef = collection(db, 'todos');
+        const q = query(todosRef, where('userId', '==', auth.currentUser.uid));
+        const querySnapshot = await getDocs(q);
+        
+        // Create a Set of unique categories
+        const categories = new Set();
+        
+        querySnapshot.forEach((doc) => {
+            const category = doc.data().category;
+            if (category) categories.add(category);
+        });
 
-    onSnapshot(categoriesQuery, (snapshot) => {
-        console.log('Categories snapshot:', snapshot.size, 'categories found');
-        // Clear existing options
+        // Update the select element
         categorySelect.innerHTML = `
             <option value="">Select Category</option>
             <option value="add-new">+ Add New Category</option>
         `;
         
-        // Add categories from Firestore
-        snapshot.forEach((doc) => {
-            console.log('Adding category:', doc.data().name);
-            const category = doc.data().name;
+        // Add existing categories
+        categories.forEach(category => {
             const option = document.createElement('option');
             option.value = category;
             option.textContent = category;
             categorySelect.appendChild(option);
         });
-    });
+
+    } catch (error) {
+        console.error('Error loading categories:', error);
+    }
 }
 
 // Add category handling
