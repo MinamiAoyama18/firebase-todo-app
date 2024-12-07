@@ -114,6 +114,7 @@ function loadTodos() {
                 <div class="todo-line-1">
                     <input type="checkbox" class="status-checkbox" ${todo.status === 'complete' ? 'checked' : ''}>
                     <span class="description ${todo.status === 'complete' ? 'completed' : ''}">${todo.description}</span>
+                    <span class="status-tag">(${todo.status})</span>
                 </div>
                 <div class="todo-line-2">
                     <span class="category-label">Category: <span class="category-value">${todo.category}</span></span>
