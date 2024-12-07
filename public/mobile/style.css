@@ -96,20 +96,37 @@ button:active {
 
 .header-section {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     margin-bottom: 20px;
 }
 
+.mobile-title {
+    white-space: nowrap;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
 #userEmail {
-    font-size: 14px;
     color: var(--text-color);
+    font-size: 14px;
+    text-align: left;
 }
 
 #logoutButton {
     width: auto;
     padding: 8px 15px;
     background-color: #666;
+    font-size: 14px;
+    margin: 0;
 }
 
 /* Login page styling */

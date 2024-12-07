@@ -210,8 +210,14 @@ categorySelect.addEventListener('change', async function(e) {
     }
 });
 
-// Add this function for the deadline button
-function showDatePicker() {
+// Move this function to the top level (outside of any other function)
+window.showDatePicker = function() {
     const deadlineInput = document.getElementById('deadline');
+    deadlineInput.style.display = 'block';  // Show the date input
     deadlineInput.showPicker();
+    
+    // Hide the date input after selection
+    deadlineInput.addEventListener('change', function() {
+        this.style.display = 'none';
+    }, { once: true });
 } 
