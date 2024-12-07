@@ -87,8 +87,8 @@ function loadTodos() {
 
     onSnapshot(todosQuery, (snapshot) => {
         todoList.innerHTML = '';
-        snapshot.forEach((doc) => {
-            const todo = doc.data();
+        snapshot.forEach((docSnapshot) => {
+            const todo = docSnapshot.data();
             const div = document.createElement('div');
             div.className = 'todo-item';
             div.innerHTML = `
@@ -99,7 +99,7 @@ function loadTodos() {
                 <div class="todo-line-2">
                     <span class="category">${todo.category}</span>
                     <span class="deadline">${todo.deadline}</span>
-                    <button class="delete-btn" data-id="${doc.id}">Delete</button>
+                    <button class="delete-btn" data-id="${docSnapshot.id}">Delete</button>
                 </div>
             `;
 
@@ -108,7 +108,8 @@ function loadTodos() {
             deleteBtn.addEventListener('click', async () => {
                 try {
                     if (confirm('Are you sure you want to delete this todo?')) {
-                        await deleteDoc(doc(db, 'todos', doc.id));
+                        const docRef = doc(db, 'todos', docSnapshot.id);
+                        await deleteDoc(docRef);
                         console.log('Todo deleted successfully');
                     }
                 } catch (error) {
