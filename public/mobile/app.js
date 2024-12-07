@@ -138,27 +138,23 @@ function loadTodos() {
 
             // Add status change functionality
             const checkbox = div.querySelector('.status-checkbox');
-            let originalStatus = todo.status; // Store the original status
-
             checkbox.addEventListener('change', async () => {
                 try {
                     const docRef = doc(db, 'todos', docSnapshot.id);
-                    if (checkbox.checked) {
-                        // Store the current status before changing to complete
-                        originalStatus = todo.status;
-                        await updateDoc(docRef, {
-                            status: 'complete'
-                        });
-                    } else {
-                        // When unchecking, revert to the original status
-                        await updateDoc(docRef, {
-                            status: originalStatus
-                        });
-                    }
+                    const newStatus = checkbox.checked ? 'complete' : todo.originalStatus || todo.status;
+                    
+                    // Update the document
+                    await updateDoc(docRef, {
+                        status: newStatus
+                    });
+
+                    // Update local todo object
+                    todo.originalStatus = todo.originalStatus || todo.status;
+                    todo.status = newStatus;
                     
                     // Update the status tag text
                     const statusTag = div.querySelector('.status-tag');
-                    statusTag.textContent = `(${checkbox.checked ? 'complete' : originalStatus})`;
+                    statusTag.textContent = `(${newStatus})`;
                     
                     // Update the description style
                     const description = div.querySelector('.description');
