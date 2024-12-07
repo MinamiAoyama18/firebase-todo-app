@@ -138,24 +138,27 @@ function loadTodos() {
 
             // Add status change functionality
             const checkbox = div.querySelector('.status-checkbox');
+            let originalStatus = todo.status; // Store the original status
+
             checkbox.addEventListener('change', async () => {
                 try {
                     const docRef = doc(db, 'todos', docSnapshot.id);
                     if (checkbox.checked) {
-                        // If checked, set to complete
+                        // Store the current status before changing to complete
+                        originalStatus = todo.status;
                         await updateDoc(docRef, {
                             status: 'complete'
                         });
                     } else {
-                        // If unchecked, revert to original status
+                        // When unchecking, revert to the original status
                         await updateDoc(docRef, {
-                            status: todo.status === 'complete' ? 'not started' : todo.status
+                            status: originalStatus
                         });
                     }
                     
                     // Update the status tag text
                     const statusTag = div.querySelector('.status-tag');
-                    statusTag.textContent = `(${checkbox.checked ? 'complete' : todo.status === 'complete' ? 'not started' : todo.status})`;
+                    statusTag.textContent = `(${checkbox.checked ? 'complete' : originalStatus})`;
                     
                     // Update the description style
                     const description = div.querySelector('.description');
