@@ -7,8 +7,8 @@ import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, ge
 const statusColors = {
     'not started': { bg: '#FFF3E0', text: '#333333' },  // Light orange
     'in progress': { bg: '#E3F2FD', text: '#333333' },  // Light blue
-    'complete': { bg: '#C8E6C9', text: '#1B5E20' },     // Green with darker text
-    'aborted': { bg: '#FFCDD2', text: '#B71C1C' }       // Red with darker text
+    'complete': { bg: '#1B5E20', text: '#FFFFFF' },     // Dark green with white text
+    'aborted': { bg: '#B71C1C', text: '#FFFFFF' }       // Dark red with white text
 };
 
 // Copy your Firebase configuration from the desktop version
