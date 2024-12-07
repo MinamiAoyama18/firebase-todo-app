@@ -113,8 +113,16 @@ function loadTodos() {
             latestTimestamp = snapshot.docs[0].data().timestamp.toDate();
         }
         
-        // Format the timestamp
-        const formattedDate = latestTimestamp.toISOString().split('T')[0];
+        // Format the timestamp in local timezone
+        const formattedDate = latestTimestamp.toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+        
         todoList.setAttribute('data-header', `To Do Items as of ${formattedDate}`);
 
         snapshot.forEach((docSnapshot) => {
