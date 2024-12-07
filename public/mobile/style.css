@@ -101,7 +101,7 @@ button:active {
 .header-section {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .mobile-title {
@@ -118,6 +118,8 @@ button:active {
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
     font-size: 16px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 #userEmail {
@@ -287,7 +289,12 @@ button:active {
 
 /* Form styling updates */
 #todoForm {
-    margin-top: 10px;  /* Reduce space above form */
+    margin-top: 5px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
 }
 
 #description {
@@ -418,4 +425,19 @@ button:active {
 .description.completed {
     text-decoration: line-through;
     opacity: 0.8;
+}
+
+/* Todo list section */
+#todoList {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+#todoList::before {
+    content: 'Your Todos';
+    display: block;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
