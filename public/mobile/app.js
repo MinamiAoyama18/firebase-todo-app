@@ -1,7 +1,7 @@
 // Import your Firebase configuration
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
-import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, getDocs } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
 
 // Copy your Firebase configuration from the desktop version
 const firebaseConfig = {
@@ -99,9 +99,24 @@ function loadTodos() {
                 <div class="todo-line-2">
                     <span class="category">${todo.category}</span>
                     <span class="deadline">${todo.deadline}</span>
-                    <button class="delete-btn">Delete</button>
+                    <button class="delete-btn" data-id="${doc.id}">Delete</button>
                 </div>
             `;
+
+            // Add delete functionality
+            const deleteBtn = div.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', async () => {
+                try {
+                    if (confirm('Are you sure you want to delete this todo?')) {
+                        await deleteDoc(doc(db, 'todos', doc.id));
+                        console.log('Todo deleted successfully');
+                    }
+                } catch (error) {
+                    console.error('Error deleting todo:', error);
+                    alert('Error deleting todo. Please try again.');
+                }
+            });
+
             todoList.appendChild(div);
         });
     });
