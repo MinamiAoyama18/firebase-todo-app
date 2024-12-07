@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Add mobile-specific meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,10 +9,74 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Keep your existing content structure but with mobile-optimized classes -->
     <div class="container-mobile">
-        <!-- Your existing content with mobile-specific modifications -->
+        <!-- Login Form -->
+        <div id="loginSection">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <button type="button" id="switchToSignup">Sign Up</button>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signupSection" style="display: none;">
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" required>
+                </div>
+                <button type="submit">Sign Up</button>
+            </form>
+            <button type="button" id="switchToLogin">Login</button>
+        </div>
+
+        <!-- Todo Section -->
+        <div id="todoSection" style="display:none;">
+            <div class="header-section">
+                <h2>Todos</h2>
+                <p id="userEmail"></p>
+                <button id="logoutButton">Logout</button>
+            </div>
+            
+            <form id="todoForm">
+                <input type="text" id="description" placeholder="New Todo" required>
+                <select id="category" required>
+                    <option value="">Select Category</option>
+                </select>
+                <select id="status">
+                    <option value="not started">Not Started</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="complete">Complete</option>
+                    <option value="aborted">Aborted</option>
+                </select>
+                <input type="date" id="deadline" required>
+                <button type="submit">Add</button>
+            </form>
+
+            <div id="todoList">
+                <!-- Todos will be displayed here -->
+            </div>
+        </div>
     </div>
-    <!-- Keep your existing script imports -->
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore-compat.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html> 

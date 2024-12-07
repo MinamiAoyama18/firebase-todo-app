@@ -117,6 +117,16 @@
 
     <!-- Firebase SDK -->
     <script type="module" src="app.js"></script>
+
+    <script>
+    // Replace the existing redirect script
+    if (!/mobile/.test(window.location.pathname) && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        window.location.href = '/mobile';
+    }
+    </script>
 </body>
 </html>
 
+
+</```
+rewritten_file>

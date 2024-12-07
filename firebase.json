@@ -3,16 +3,18 @@
     "public": "public",
     "rewrites": [
       {
+        "source": "/mobile/**",
+        "destination": "/public-mobile/index.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
     ],
-    "redirects": [
-      {
-        "source": "/mobile/**",
-        "destination": "/public-mobile/:1",
-        "type": 301
-      }
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
     ]
   },
   "firestore": {
