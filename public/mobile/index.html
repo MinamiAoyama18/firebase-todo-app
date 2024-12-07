@@ -22,34 +22,22 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit" class="login-btn">Login</button>
             </form>
-            <button type="button" id="switchToSignup">Sign Up</button>
-        </div>
-
-        <!-- Sign Up Form -->
-        <div id="signupSection" style="display: none;">
-            <h2>📱 Mobile Sign Up</h2>
-            <form id="signupForm">
-                <div class="form-group">
-                    <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" name="password" required>
-                </div>
-                <button type="submit">Sign Up</button>
-            </form>
-            <button type="button" id="switchToLogin">Login</button>
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            <button type="button" id="switchToSignup" class="signup-btn">Sign Up</button>
         </div>
 
         <!-- Todo Section -->
         <div id="todoSection" style="display:none;">
             <div class="header-section">
-                <h2>📱 Mobile Todo List</h2>
-                <p id="userEmail"></p>
-                <button id="logoutButton">Logout</button>
+                <h2 class="mobile-title">📱 Mobile Todo List</h2>
+                <div class="user-info">
+                    <span id="userEmail"></span>
+                    <button id="logoutButton">Logout</button>
+                </div>
             </div>
             
             <form id="todoForm">
@@ -58,12 +46,14 @@
                     <option value="">Select Category</option>
                 </select>
                 <select id="status">
+                    <option value="">Select Progress</option>
                     <option value="not started">Not Started</option>
                     <option value="in progress">In Progress</option>
                     <option value="complete">Complete</option>
                     <option value="aborted">Aborted</option>
                 </select>
-                <input type="date" id="deadline" required>
+                <button type="button" id="deadlineBtn" onclick="showDatePicker()">Deadline</button>
+                <input type="date" id="deadline" required style="display: none;">
                 <button type="submit">Add Todo</button>
             </form>
 

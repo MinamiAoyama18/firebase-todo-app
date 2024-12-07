@@ -110,4 +110,101 @@ button:active {
     width: auto;
     padding: 8px 15px;
     background-color: #666;
+}
+
+/* Login page styling */
+.login-btn {
+    background-color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.signup-btn {
+    background-color: #2196F3;
+}
+
+.divider {
+    text-align: center;
+    margin: 15px 0;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.divider::before {
+    left: 0;
+}
+
+.divider::after {
+    right: 0;
+}
+
+.divider span {
+    background-color: var(--background-color);
+    padding: 0 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Todo section styling */
+.mobile-title {
+    white-space: nowrap;
+    margin-bottom: 10px;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+#userEmail {
+    color: var(--text-color);
+}
+
+/* Todo items styling */
+.todo-item {
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 8px;
+    padding: 12px;
+}
+
+.todo-line-1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.todo-line-2 {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.delete-btn {
+    margin-left: auto;
+    background-color: #ff4444;
+    padding: 8px 15px;
+    font-size: 14px;
+    width: auto;
+}
+
+/* Form styling */
+#deadlineBtn {
+    background-color: #666;
+    margin-bottom: 10px;
+}
+
+#status {
+    margin-bottom: 10px;
 } 

@@ -97,11 +97,15 @@ function loadTodos() {
             const div = document.createElement('div');
             div.className = 'todo-item';
             div.innerHTML = `
-                <input type="checkbox" ${todo.status === 'complete' ? 'checked' : ''}>
-                <span>${todo.description}</span>
-                <span class="category">${todo.category}</span>
-                <span class="deadline">${todo.deadline}</span>
-                <button class="delete-btn">Delete</button>
+                <div class="todo-line-1">
+                    <input type="checkbox" ${todo.status === 'complete' ? 'checked' : ''}>
+                    <span class="description">${todo.description}</span>
+                </div>
+                <div class="todo-line-2">
+                    <span class="category">${todo.category}</span>
+                    <span class="deadline">${todo.deadline}</span>
+                    <button class="delete-btn">Delete</button>
+                </div>
             `;
             todoList.appendChild(div);
         });
@@ -215,4 +219,10 @@ categorySelect.addEventListener('change', async function(e) {
             }
         }
     }
-}); 
+});
+
+// Add this function for the deadline button
+function showDatePicker() {
+    const deadlineInput = document.getElementById('deadline');
+    deadlineInput.showPicker();
+} 
