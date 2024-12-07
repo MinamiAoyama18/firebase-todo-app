@@ -1,7 +1,7 @@
 // Import your Firebase configuration
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
-import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, getDocs, deleteDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
 
 // Copy your Firebase configuration from the desktop version
 const firebaseConfig = {
@@ -93,8 +93,8 @@ function loadTodos() {
             div.className = 'todo-item';
             div.innerHTML = `
                 <div class="todo-line-1">
-                    <input type="checkbox" ${todo.status === 'complete' ? 'checked' : ''}>
-                    <span class="description">${todo.description}</span>
+                    <input type="checkbox" class="status-checkbox" ${todo.status === 'complete' ? 'checked' : ''}>
+                    <span class="description ${todo.status === 'complete' ? 'completed' : ''}">${todo.description}</span>
                 </div>
                 <div class="todo-line-2">
                     <span class="category">${todo.category}</span>
@@ -102,6 +102,24 @@ function loadTodos() {
                     <button class="delete-btn" data-id="${docSnapshot.id}">Delete</button>
                 </div>
             `;
+
+            // Add status change functionality
+            const checkbox = div.querySelector('.status-checkbox');
+            checkbox.addEventListener('change', async () => {
+                try {
+                    const docRef = doc(db, 'todos', docSnapshot.id);
+                    await updateDoc(docRef, {
+                        status: checkbox.checked ? 'complete' : 'not started'
+                    });
+                    // Update the description style
+                    const description = div.querySelector('.description');
+                    description.classList.toggle('completed', checkbox.checked);
+                } catch (error) {
+                    console.error('Error updating status:', error);
+                    alert('Error updating status. Please try again.');
+                    checkbox.checked = !checkbox.checked; // Revert checkbox state
+                }
+            });
 
             // Add delete functionality
             const deleteBtn = div.querySelector('.delete-btn');

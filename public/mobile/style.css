@@ -240,4 +240,16 @@ button:active {
 
 #status {
     margin-bottom: 10px;
+}
+
+/* Add these styles for completed todos */
+.description.completed {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.status-checkbox {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
 } 
