@@ -3,6 +3,18 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, getDocs, deleteDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
 
+// Replace the color utility functions with this array of predefined colors
+const colorSchemes = [
+    { bg: '#E8F5E9', text: '#333333' }, // Light green
+    { bg: '#F3E5F5', text: '#333333' }, // Light purple
+    { bg: '#E3F2FD', text: '#333333' }, // Light blue
+    { bg: '#FFF3E0', text: '#333333' }, // Light orange
+    { bg: '#FFEBEE', text: '#333333' }, // Light red
+    { bg: '#E0F7FA', text: '#333333' }, // Light cyan
+    { bg: '#F1F8E9', text: '#333333' }, // Light lime
+    { bg: '#FFF8E1', text: '#333333' }  // Light amber
+];
+
 // Copy your Firebase configuration from the desktop version
 const firebaseConfig = {
     apiKey: "AIzaSyB4dy-QQT4YLHCdMLF0C6vHUiwEwnQmyjs",
@@ -92,12 +104,11 @@ function loadTodos() {
             const div = document.createElement('div');
             div.className = 'todo-item';
             
-            // Generate random background color and matching text color
-            const backgroundColor = getRandomPastelColor();
-            const textColor = getContrastColor(backgroundColor);
+            // Get a random color scheme
+            const colorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
             
-            div.style.backgroundColor = backgroundColor;
-            div.style.color = textColor;
+            div.style.backgroundColor = colorScheme.bg;
+            div.style.color = colorScheme.text;
             
             div.innerHTML = `
                 <div class="todo-line-1">
@@ -111,11 +122,11 @@ function loadTodos() {
                 </div>
             `;
 
-            // Update delete button color to match the contrast
+            // Update delete button color
             const deleteBtn = div.querySelector('.delete-btn');
-            deleteBtn.style.color = textColor;
+            deleteBtn.style.color = colorScheme.text;
             deleteBtn.style.backgroundColor = 'transparent';
-            deleteBtn.style.border = `1px solid ${textColor}`;
+            deleteBtn.style.border = `1px solid ${colorScheme.text}`;
 
             // Add status change functionality
             const checkbox = div.querySelector('.status-checkbox');
