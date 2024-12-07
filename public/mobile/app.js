@@ -164,8 +164,11 @@ async function loadCategories() {
     );
 
     onSnapshot(categoriesQuery, (snapshot) => {
-        // Clear existing options except the default one
-        categorySelect.innerHTML = '<option value="">Select Category</option>';
+        // Clear existing options
+        categorySelect.innerHTML = `
+            <option value="">Select Category</option>
+            <option value="add-new">+ Add New Category</option>
+        `;
         
         // Add categories from Firestore
         snapshot.forEach((doc) => {
