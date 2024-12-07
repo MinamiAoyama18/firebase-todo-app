@@ -3,9 +3,14 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
 
-// Your web app's Firebase configuration (copy from your desktop version)
+// Copy your Firebase configuration from the desktop version
 const firebaseConfig = {
-    // Copy your config from the desktop version
+    apiKey: "AIzaSyBxcYFZBIYVZQgDgWHuRmYzqj6-oBILXL8",
+    authDomain: "todoapp-20241203.firebaseapp.com",
+    projectId: "todoapp-20241203",
+    storageBucket: "todoapp-20241203.appspot.com",
+    messagingSenderId: "1096981910987",
+    appId: "1:1096981910987:web:c0c6a2c3f5c8c6c6c6c6c6"
 };
 
 // Initialize Firebase
