@@ -93,9 +93,6 @@ function loadTodos() {
         orderBy('timestamp', 'desc')
     );
 
-    // Store color schemes for each todo
-    const todoColors = new Map();
-
     onSnapshot(todosQuery, (snapshot) => {
         todoList.innerHTML = '';
         snapshot.forEach((docSnapshot) => {
@@ -103,13 +100,8 @@ function loadTodos() {
             const div = document.createElement('div');
             div.className = 'todo-item';
             
-            // Get or create color scheme for this todo
-            let colorScheme = todoColors.get(docSnapshot.id);
-            if (!colorScheme) {
-                colorScheme = statusColors[todo.status];
-                todoColors.set(docSnapshot.id, colorScheme);
-            }
-            
+            // Get color scheme based on status
+            const colorScheme = statusColors[todo.status];
             div.style.backgroundColor = colorScheme.bg;
             div.style.color = colorScheme.text;
             
@@ -137,7 +129,6 @@ function loadTodos() {
                     const newStatus = statusSelect.value;
                     const docRef = doc(db, 'todos', docSnapshot.id);
                     
-                    // Update the document
                     await updateDoc(docRef, {
                         status: newStatus
                     });
@@ -158,11 +149,12 @@ function loadTodos() {
                 } catch (error) {
                     console.error('Error updating status:', error);
                     alert('Error updating status. Please try again.');
-                    statusSelect.value = todo.status; // Revert to previous status
+                    statusSelect.value = todo.status;
                 }
             });
 
             // Add delete functionality
+            const deleteBtn = div.querySelector('.delete-btn');
             deleteBtn.addEventListener('click', async () => {
                 try {
                     if (confirm('Are you sure you want to delete this todo?')) {
