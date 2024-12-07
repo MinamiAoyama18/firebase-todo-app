@@ -35,6 +35,9 @@ const todoList = document.getElementById('todoList');
 const userEmailSpan = document.getElementById('userEmail');
 const logoutButton = document.getElementById('logoutButton');
 const switchToSignup = document.getElementById('switchToSignup');
+const signupSection = document.getElementById('signupSection');
+const signupForm = document.getElementById('signupForm');
+const switchToLogin = document.getElementById('switchToLogin');
 
 // Authentication logic
 loginForm.addEventListener('submit', async (e) => {
@@ -75,12 +78,14 @@ todoForm.addEventListener('submit', async (e) => {
 auth.onAuthStateChanged((user) => {
     if (user) {
         loginSection.style.display = 'none';
+        signupSection.style.display = 'none';
         todoSection.style.display = 'block';
         userEmailSpan.textContent = user.email;
         loadTodos();
         loadCategories();
     } else {
         loginSection.style.display = 'block';
+        signupSection.style.display = 'none';
         todoSection.style.display = 'none';
     }
 });
@@ -175,8 +180,28 @@ function loadTodos() {
 
 // Switch between login and signup
 switchToSignup.addEventListener('click', () => {
-    // Redirect to desktop version with signup section visible
-    window.location.href = '/?signup=true';
+    loginSection.style.display = 'none';
+    signupSection.style.display = 'block';
+});
+
+// Add switch back to login handler
+switchToLogin.addEventListener('click', () => {
+    signupSection.style.display = 'none';
+    loginSection.style.display = 'block';
+});
+
+// Add signup form handler
+signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+
+    try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        // Auth state observer will handle the redirect to todo section
+    } catch (error) {
+        alert(error.message);
+    }
 });
 
 // Logout
