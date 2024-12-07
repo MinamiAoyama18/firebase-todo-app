@@ -435,9 +435,11 @@ button:active {
 }
 
 #todoList::before {
-    content: 'Your Todos';
+    content: attr(data-header);
     display: block;
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 10px;
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
 }

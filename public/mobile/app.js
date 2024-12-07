@@ -98,6 +98,14 @@ function loadTodos() {
         orderBy('timestamp', 'desc')
     );
 
+    // Format today's date
+    const today = new Date();
+    const dateStr = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    
+    // Set the header text
+    const todoList = document.getElementById('todoList');
+    todoList.setAttribute('data-header', `To Do Items as of ${dateStr}`);
+
     onSnapshot(todosQuery, (snapshot) => {
         todoList.innerHTML = '';
         snapshot.forEach((docSnapshot) => {
