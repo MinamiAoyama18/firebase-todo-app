@@ -158,12 +158,14 @@ const categorySelect = document.getElementById('category');
 
 // Add this function to load categories
 async function loadCategories() {
+    console.log('Loading categories...');
     const categoriesQuery = query(
         collection(db, 'categories'),
         where('userId', '==', auth.currentUser.uid)
     );
 
     onSnapshot(categoriesQuery, (snapshot) => {
+        console.log('Categories snapshot:', snapshot.size, 'categories found');
         // Clear existing options
         categorySelect.innerHTML = `
             <option value="">Select Category</option>
@@ -172,6 +174,7 @@ async function loadCategories() {
         
         // Add categories from Firestore
         snapshot.forEach((doc) => {
+            console.log('Adding category:', doc.data().name);
             const category = doc.data().name;
             const option = document.createElement('option');
             option.value = category;
