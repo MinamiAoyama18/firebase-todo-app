@@ -20,16 +20,13 @@ const db = getFirestore();
 
 // DOM Elements
 const loginSection = document.getElementById('loginSection');
-const signupSection = document.getElementById('signupSection');
 const todoSection = document.getElementById('todoSection');
 const loginForm = document.getElementById('loginForm');
-const signupForm = document.getElementById('signupForm');
 const todoForm = document.getElementById('todoForm');
 const todoList = document.getElementById('todoList');
 const userEmailSpan = document.getElementById('userEmail');
 const logoutButton = document.getElementById('logoutButton');
 const switchToSignup = document.getElementById('switchToSignup');
-const switchToLogin = document.getElementById('switchToLogin');
 
 // Authentication logic
 loginForm.addEventListener('submit', async (e) => {
@@ -70,14 +67,12 @@ todoForm.addEventListener('submit', async (e) => {
 auth.onAuthStateChanged((user) => {
     if (user) {
         loginSection.style.display = 'none';
-        signupSection.style.display = 'none';
         todoSection.style.display = 'block';
         userEmailSpan.textContent = user.email;
         loadTodos();
         loadCategories();
     } else {
         loginSection.style.display = 'block';
-        signupSection.style.display = 'none';
         todoSection.style.display = 'none';
     }
 });
@@ -114,13 +109,7 @@ function loadTodos() {
 
 // Switch between login and signup
 switchToSignup.addEventListener('click', () => {
-    loginSection.style.display = 'none';
-    signupSection.style.display = 'block';
-});
-
-switchToLogin.addEventListener('click', () => {
-    loginSection.style.display = 'block';
-    signupSection.style.display = 'none';
+    window.location.href = '/';
 });
 
 // Logout
