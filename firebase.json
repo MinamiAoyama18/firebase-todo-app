@@ -3,13 +3,22 @@
     "public": "public",
     "rewrites": [
       {
-        "source": "/mobile/**",
+        "source": "/mobile",
         "destination": "/public-mobile/index.html"
+      },
+      {
+        "source": "/mobile/**",
+        "destination": "/public-mobile/**"
       },
       {
         "source": "**",
         "destination": "/index.html"
       }
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
     ]
   }
 }
