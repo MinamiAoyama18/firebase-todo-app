@@ -59,6 +59,12 @@ todoForm.addEventListener('submit', async (e) => {
     const status = document.getElementById('status').value;
     const deadline = document.getElementById('deadline').value;
 
+    // Don't submit if category is 'add-new'
+    if (category === 'add-new') {
+        alert('Please select a valid category');
+        return;
+    }
+
     try {
         await addDoc(collection(db, 'todos'), {
             userId: auth.currentUser.uid,
@@ -291,21 +297,39 @@ async function loadCategories() {
     }
 }
 
-// Add category handling
+// Update the category handling
 categorySelect.addEventListener('change', async function(e) {
     if (e.target.value === 'add-new') {
         const newCategory = prompt('Enter new category name:');
         if (newCategory) {
             try {
+                // Add the new category to Firestore
                 await addDoc(collection(db, 'categories'), {
                     userId: auth.currentUser.uid,
                     name: newCategory,
                     timestamp: new Date()
                 });
-                // The categories will automatically update through the onSnapshot listener
+
+                // Update the select element with the new category
+                const option = document.createElement('option');
+                option.value = newCategory;
+                option.textContent = newCategory;
+                
+                // Insert the new option before the "Add New Category" option
+                const addNewOption = categorySelect.querySelector('option[value="add-new"]');
+                categorySelect.insertBefore(option, addNewOption);
+                
+                // Select the new category
+                categorySelect.value = newCategory;
+
             } catch (error) {
+                console.error('Error adding category:', error);
                 alert('Error adding category: ' + error.message);
+                categorySelect.value = ''; // Reset to default option
             }
+        } else {
+            // If user cancels the prompt, reset to default option
+            categorySelect.value = '';
         }
     }
 });
